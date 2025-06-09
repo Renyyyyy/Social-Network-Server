@@ -1,17 +1,15 @@
 import { Controller, Get } from "@nestjs/common";
-import { Sequelize } from 'sequelize-typescript';
+import { HealthService } from "./health.service";
 
 @Controller('/api')
 export class HealthController {
-    constructor(private sequelize: Sequelize) {}
+
+    constructor(
+        private readonly healthService: HealthService
+    ) {}
 
     @Get('/ping')
     async ping(): Promise<string> {
-        try {
-            await this.sequelize.authenticate();
-            return 'pong';
-        } catch (error) {
-            throw new Error('Database connection failed');
-        }
+        return this.healthService.ping()
     }
 }
