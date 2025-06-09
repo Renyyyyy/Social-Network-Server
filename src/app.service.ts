@@ -1,6 +1,9 @@
-
+interface HealthStatus {
+    status: string;
+ }
+  
 export class AppService {
-    getHealth() {
-        return[{status: 'pong'}]
+ getHealth(): HealthStatus[] {
+    return [{ status: 'pong' }];
     }
 }
