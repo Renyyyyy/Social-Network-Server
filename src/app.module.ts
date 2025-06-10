@@ -1,12 +1,11 @@
 import { Module } from '@nestjs/common';
-import { HealthController } from 'src/health.controller';
-import { HealthService } from 'src/health.service';
 import { SequelizeModule } from '@nestjs/sequelize';
 import { ConfigModule } from '@nestjs/config';
+import { HealthModule } from './health/health.module';
 
 @Module({
-  controllers: [HealthController],
-  providers: [HealthService],
+  controllers: [],
+  providers: [],
   imports: [
     ConfigModule.forRoot({
         envFilePath: '.env'
@@ -21,6 +20,7 @@ import { ConfigModule } from '@nestjs/config';
       autoLoadModels: true,
       logging: false
     }),
+    HealthModule,
   ],
 })
-export class HealthModule {}
+export class AppModule {}
