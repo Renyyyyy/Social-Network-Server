@@ -1,13 +1,13 @@
 import {Column, DataType, Model, Table} from "sequelize-typescript";
 
-interface AuthAttrs {
+interface IUser {
     nickname: string;
     login: string;
     password: string;
 }
 
 @Table({tableName: 'Users'})
-export class User extends Model<User, AuthAttrs>{
+export class User extends Model<User, IUser>{
     @Column({type: DataType.INTEGER, unique: true, autoIncrement: true, primaryKey: true})
     id: number;
 
