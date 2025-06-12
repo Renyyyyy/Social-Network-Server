@@ -11,9 +11,13 @@ export class AuthService {
     constructor(private userService: UsersService,
                 private jwtService: JwtService){}
 
-    async login(userDto: CreateUserDto){
+    async login(userDto: CreateUserDto):Promise<CreateUserResponse>{
        const user = await this.validateUser(userDto)
        return this.generateToken(user)
+    }
+
+    async logout(userDto: CreateUserDto){
+
     }
     
     async registration(userDto: CreateUserDto):Promise<CreateUserResponse>{
