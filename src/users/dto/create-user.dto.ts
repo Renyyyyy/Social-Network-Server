@@ -8,3 +8,7 @@ export class CreateUserDto {
     @ApiProperty({example: 'verystrongpassword', description: 'Password'})
     readonly password: string;
 }
+
+export type CreateUserResponse = {
+    token: string;
+}
