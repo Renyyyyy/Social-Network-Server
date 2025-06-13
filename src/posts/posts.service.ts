@@ -10,7 +10,7 @@ export class PostsService {
 
     }
 
-    async create(dto: CreatePostDto){
+    async create(dto: CreatePostDto):Promise<Post>{
         const post = await this.postRepository.create({...dto})
         return post;
     }

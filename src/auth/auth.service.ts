@@ -16,9 +16,6 @@ export class AuthService {
        return this.generateToken(user)
     }
 
-    async logout(userDto: CreateUserDto){
-
-    }
     
     async registration(userDto: CreateUserDto):Promise<CreateUserResponse>{
         const candidate = await this.userService.getUserByLogin(userDto.login);
@@ -28,6 +25,14 @@ export class AuthService {
         const hashPassword = await bcrypt.hash(userDto.password, 5)
         const user = await this.userService.createUser({...userDto, password: hashPassword})
         return this.generateToken(user)
+    }
+
+    async me(userId: number): Promise<User> {
+        const user = await this.userService.getUserById(userId);
+        if (!user) {
+          throw new UnauthorizedException('User not found');
+        }
+        return user;
     }
 
     private async generateToken(user: User): Promise<{token: string}>{
