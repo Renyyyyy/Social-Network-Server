@@ -16,7 +16,7 @@ export class UsersService {
     }
 
     async getAllUsers():Promise<User[]>{
-        const users = await this.userRepository.findAll({include: {all: true}});
+        const users = await this.userRepository.findAll({include: {all: true}/* offset: 10, limit: 10*/});
         return users;
     }
 
@@ -25,7 +25,6 @@ export class UsersService {
         return user;
     }
     
-    @UseGuards(JwtAuthGuard)
     async getUserById(id: number):Promise<User>{
         const user = await this.userRepository.findOne({where: {id}, include: {all: true}})
         return user;

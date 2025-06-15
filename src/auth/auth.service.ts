@@ -34,6 +34,11 @@ export class AuthService {
         }
         return user;
     }
+    
+    async refresh(userId: number): Promise<{token: string}>{
+        const user = await this.userService.getUserById(userId)
+        return this.generateToken(user)
+    }
 
     private async generateToken(user: User): Promise<{token: string}>{
         const payload = {nickname: user.get("nickname"), login: user.get("login"), id: user.get("id")}
