@@ -37,6 +37,9 @@ export class AuthService {
     
     async refresh(userId: number): Promise<{token: string}>{
         const user = await this.userService.getUserById(userId)
+        if (!user) {
+            throw new UnauthorizedException('User not found');
+        }
         return this.generateToken(user)
     }
 
