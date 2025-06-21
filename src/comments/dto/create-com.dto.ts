@@ -1,7 +1,6 @@
-
-export class CreatePostDto {
+export class CreateCommDto {
     readonly id: number;
-    readonly title: string;
     readonly content: string;
     readonly userId: number;
+    readonly postId: number;
 }
