@@ -1,26 +1,35 @@
-import { Body, Controller, Post, Delete, Put } from '@nestjs/common';
+import { Body, Controller, Post, Delete, Put, Req, UseGuards } from '@nestjs/common';
 import { CreateCommDto } from './dto/create-com.dto';
 import { UpdateCommDto } from './dto/update-com.dto';
 import { DeleteCommDto } from './dto/delete-com.dto';
 import { CommentsService } from './comments.service';
 import { Comment } from './comments.model';
+import { User } from 'src/users/users.model';
+import { JwtDecodeGuard } from 'src/auth/jwt-decode.guard';
+import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 
 @Controller('comments')
 export class CommentsController {
     constructor(private commentsService: CommentsService) {}
     
+    @UseGuards(JwtAuthGuard)
+    @UseGuards(JwtDecodeGuard)
     @Post('/create')
-    create(@Body() dto: CreateCommDto): Promise<Comment> {
-        return this.commentsService.create(dto);
+    create(@Body() dto: CreateCommDto, @Req() req: Request & { user: User }): Promise<Comment> {
+        return this.commentsService.create(dto, req.user);
     }
 
+    @UseGuards(JwtAuthGuard)
+    @UseGuards(JwtDecodeGuard)
     @Put('/update')
-    update(@Body() dto: UpdateCommDto): Promise<Comment> {
-        return this.commentsService.update(dto);
+    update(@Body() dto: UpdateCommDto, @Req() req: Request & { user: User }): Promise<{ message: string }> {
+        return this.commentsService.update(dto, req.user);
     }
 
+    @UseGuards(JwtAuthGuard)
+    @UseGuards(JwtDecodeGuard)
     @Delete('/delete')
-    delete(@Body() dto: DeleteCommDto) {
-        return this.commentsService.delete(dto);
+    delete(@Body() dto: DeleteCommDto, @Req() req: Request & { user: User }) {
+        return this.commentsService.delete(dto, req.user);
     }
 }

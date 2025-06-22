@@ -4,26 +4,42 @@ import { CreateCommDto } from './dto/create-com.dto';
 import { Comment } from './comments.model';
 import { UpdateCommDto } from './dto/update-com.dto';
 import { DeleteCommDto } from './dto/delete-com.dto';
+import { User } from 'src/users/users.model';
 
 @Injectable()
 export class CommentsService {
     
     constructor(@InjectModel(Comment) private commRepository: typeof Comment) {}
     
-    async create(dto: CreateCommDto): Promise<Comment> {
-        const comment = await this.commRepository.create({...dto});
+
+    async create(dto: CreateCommDto, user: User): Promise<Comment> {
+        const comment = await this.commRepository.create({...dto, userId: user.id});
         return comment;
     }
 
-    async update(dto: UpdateCommDto): Promise<Comment> {
+    async update(dto: UpdateCommDto, user: User): Promise<{ message: string }> {
         const comment = await this.commRepository.findByPk(dto.id);
-        await comment.update({ content: dto.content });
-        return comment;
+        if(!comment){
+            return { message: 'Comment not exist' };
+        }
+        if(comment.get("userId") == user.id){
+            await comment.update({ content: dto.content });
+            return { message: 'Comment updated successfully' };
+        }
+        console.log(comment.get("userId") + " " + user.id)
+        return { message: 'You may only update your own comments' };
     }
 
-    async delete(dto: DeleteCommDto): Promise<{ message: string }> {
-        await this.commRepository.destroy({ where: { id: dto.id } });
-        return { message: 'Comment deleted successfully' };
+    async delete(dto: DeleteCommDto, user: User): Promise<{ message: string }> {
+        const comment = await this.commRepository.findByPk(dto.id);
+        if(!comment){
+            return { message: 'Comment not exist' };
+        }
+        if(comment.get("userId") == user.id){
+            await this.commRepository.destroy({ where: { id: dto.id } });
+            return { message: 'Comment deleted successfully' };
+        }
+        return { message: 'You may only delete your own comments' };
     }
 
 
