@@ -2,28 +2,23 @@ import { BelongsTo, Column, DataType, ForeignKey, Model, Table } from "sequelize
 import { Post } from "src/posts/posts.model";
 import { User } from "src/users/users.model";
 
-interface CommCreationAttrs {
-    content: string;
+interface LikeCreationAttrs {
     userId: number;
     postId: number;
 }
 
-@Table({ tableName: 'Comments' })
-export class Comment extends Model<Comment, CommCreationAttrs>{
+@Table({ tableName: 'Likes'})
+export class Like extends Model<Like, LikeCreationAttrs>{
 
     //@ts-ignore
     @Column({ type: DataType.INTEGER, unique: true, autoIncrement: true, primaryKey: true }) id: number;
-
-    @Column({ type: DataType.STRING, allowNull: false }) 
-    content: string;
     
     @ForeignKey(() => User)
     @Column({ type: DataType.INTEGER, allowNull: false })
     userId: number;
 
-    // TODO how to remove password 
     @BelongsTo(() => User)
-    author: User;
+    user: User
 
     @ForeignKey(() => Post)
     @Column({ type: DataType.INTEGER, allowNull: false })

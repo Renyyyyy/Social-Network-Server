@@ -9,6 +9,7 @@ import { PostsModule } from './posts/posts.module';
 import { Post } from './posts/posts.model';
 import { CommentsModule } from './comments/comments.module';
 import { Comment } from './comments/comments.model';
+import { LikesModule } from './likes/likes.module';
 
 @Module({
   controllers: [],
@@ -32,7 +33,8 @@ import { Comment } from './comments/comments.model';
     UsersModule,
     AuthModule,
     PostsModule,
-    CommentsModule
+    CommentsModule,
+    LikesModule
   ],
 })
 export class AppModule {}

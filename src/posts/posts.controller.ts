@@ -14,21 +14,18 @@ export class PostsController {
     constructor(private postService: PostsService){}
 
     @UseGuards(JwtAuthGuard)
-    @UseGuards(JwtDecodeGuard)
     @Post('/create')
     create(@Body() dto: CreatePostDto, @Req() req: Request & { user: User }): Promise<PostModel> {
-        return this.postService.create(dto, req.user)
+        return this.postService.create(dto, req.user);
     }
     
     @UseGuards(JwtAuthGuard)
-    @UseGuards(JwtDecodeGuard)
     @Put('/update')
     update(@Body() dto: UpdatePostDto, @Req() req: Request & { user: User }): Promise<{ message: string }> {
         return this.postService.update(dto, req.user);
     }
     
     @UseGuards(JwtAuthGuard)
-    @UseGuards(JwtDecodeGuard)
     @Delete('/delete')
     delete(@Body() dto: DeletePostDto, @Req() req: Request & { user: User }) {
         return this.postService.delete(dto, req.user);

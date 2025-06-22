@@ -22,7 +22,8 @@ export class Post extends Model<Post, PostCreationAttrs>{
     @ForeignKey(() => User)
     @Column({type: DataType.INTEGER})
     userId: number;
-
+    
+    // TODO how to remove password 
     @BelongsTo(() => User)
     author: User;
 }

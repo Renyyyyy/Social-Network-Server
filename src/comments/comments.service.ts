@@ -26,7 +26,6 @@ export class CommentsService {
             await comment.update({ content: dto.content });
             return { message: 'Comment updated successfully' };
         }
-        console.log(comment.get("userId") + " " + user.id)
         return { message: 'You may only update your own comments' };
     }
 
@@ -45,5 +44,13 @@ export class CommentsService {
 
     async getCommById(id: number): Promise<Comment> {
         return await this.commRepository.findOne({where: { id },include: { all: true }});
+    }
+
+    async getAllComments():Promise<Comment[]>{
+        const comms = await this.commRepository.findAll({include: {all: true}/* offset: 10, limit: 10*/});
+        return comms/*.map(comms => {
+            delete comms.author.password;
+            return comms
+        });*/
     }
 }
