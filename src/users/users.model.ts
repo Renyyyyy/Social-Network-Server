@@ -1,5 +1,6 @@
 import { ApiProperty } from "@nestjs/swagger";
 import {Column, DataType, HasMany, Model, Table} from "sequelize-typescript";
+import { Follower } from "src/followers/followers.model";
 import { Post } from "src/posts/posts.model";
 
 interface IUser {
@@ -8,7 +9,17 @@ interface IUser {
     password: string;
 }
 
-@Table({tableName: 'Users'})
+@Table({
+    tableName: 'Users',
+    defaultScope: {
+        attributes: { exclude: ['password'] }
+    },
+    scopes: {
+        withPassword: {
+            attributes: { include: ['password'] }
+        }
+    }
+})
 export class User extends Model<User, IUser>{
     @ApiProperty({example: '1', description: 'Unique identificator'})
     //@ts-ignore
@@ -28,4 +39,7 @@ export class User extends Model<User, IUser>{
 
     @HasMany(() => Post)
     posts: Post[];
+
+    @HasMany(() => Follower)
+    folowers: Follower[];
 }

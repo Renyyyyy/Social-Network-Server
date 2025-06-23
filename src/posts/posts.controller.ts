@@ -27,7 +27,7 @@ export class PostsController {
     
     @UseGuards(JwtAuthGuard)
     @Delete('/delete')
-    delete(@Body() dto: DeletePostDto, @Req() req: Request & { user: User }) {
+    delete(@Body() dto: DeletePostDto, @Req() req: Request & { user: User }): Promise<{ message: string }> {
         return this.postService.delete(dto, req.user);
     }
 }

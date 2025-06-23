@@ -10,6 +10,9 @@ import { Post } from './posts/posts.model';
 import { CommentsModule } from './comments/comments.module';
 import { Comment } from './comments/comments.model';
 import { LikesModule } from './likes/likes.module';
+import { FollowersModule } from './followers/followers.module';
+import { Like } from './likes/likes.model';
+import { Follower } from './followers/followers.model';
 
 @Module({
   controllers: [],
@@ -25,7 +28,7 @@ import { LikesModule } from './likes/likes.module';
       username: process.env.POSTGRES_USER,
       password: String(process.env.POSTGRES_PASSWORD),
       database: process.env.POSTGRES_DB,
-      models: [User, Post, Comment],
+      models: [User, Post, Comment, Like, Follower],
       autoLoadModels: true,
       logging: false
     }),
@@ -34,7 +37,8 @@ import { LikesModule } from './likes/likes.module';
     AuthModule,
     PostsModule,
     CommentsModule,
-    LikesModule
+    LikesModule,
+    FollowersModule
   ],
 })
 export class AppModule {}

@@ -2,7 +2,6 @@ import { Injectable, UseGuards } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
 import { User } from 'src/users/users.model';
 import { CreateUserDto } from './dto/create-user.dto';
-import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 
 @Injectable()
 export class UsersService {
@@ -20,7 +19,7 @@ export class UsersService {
     }
 
     async getUserByLogin(login: string):Promise<User>{
-        const user = await this.userRepository.findOne({where: {login}, include: {all: true}})
+        const user = await this.userRepository.scope('withPassword').findOne({where: {login}, include: {all: true}})
         return user;
     }
     

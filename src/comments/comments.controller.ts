@@ -5,7 +5,6 @@ import { DeleteCommDto } from './dto/delete-com.dto';
 import { CommentsService } from './comments.service';
 import { Comment } from './comments.model';
 import { User } from 'src/users/users.model';
-import { JwtDecodeGuard } from 'src/auth/jwt-decode.guard';
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 
 @Controller('comments')
@@ -26,7 +25,7 @@ export class CommentsController {
 
     @UseGuards(JwtAuthGuard)
     @Delete()
-    delete(@Body() dto: DeleteCommDto, @Req() req: Request & { user: User }) {
+    delete(@Body() dto: DeleteCommDto, @Req() req: Request & { user: User }): Promise<{ message: string }>  {
         return this.commentsService.delete(dto, req.user);
     }
     
