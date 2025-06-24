@@ -37,7 +37,6 @@ export class PostsService {
             await this.postRepository.destroy({ where: { id: dto.id } });
             return { message: 'Post deleted successfully' };
         }
-        console.log(post.get("userId") + " " + user.id)
         return { message: 'You may only delete your own posts' };
     }
 }

@@ -1,4 +1,5 @@
-import {BelongsTo, Column, DataType, ForeignKey, Model, Table} from "sequelize-typescript";
+import {BelongsTo, Column, DataType, ForeignKey, HasMany, Model, Table} from "sequelize-typescript";
+import { Like } from "src/likes/likes.model";
 import { User } from "src/users/users.model";
 
 interface PostCreationAttrs {
@@ -26,4 +27,7 @@ export class Post extends Model<Post, PostCreationAttrs>{
     // TODO how to remove password 
     @BelongsTo(() => User)
     author: User;
+
+    @HasMany(() => Like)
+    likes: Like[];
 }
