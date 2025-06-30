@@ -1,7 +1,7 @@
 import {BelongsTo, Column, DataType, ForeignKey, HasMany, Model, Table} from "sequelize-typescript";
 import { User } from "src/users/users.model";
-import { Comment } from "src/comments/comments.model"; // Добавьте импорт
-import { Like } from "src/likes/likes.model"; // Добавьте импорт
+import { Comment } from "src/comments/comments.model";
+import { Like } from "src/likes/likes.model";
 
 interface PostCreationAttrs {
     title: string;
@@ -28,11 +28,9 @@ export class Post extends Model<Post, PostCreationAttrs>{
     @BelongsTo(() => User)
     author: User;
 
-    // Добавьте связь с комментариями
     @HasMany(() => Comment)
     comments: Comment[];
 
-    // Добавьте связь с лайками
     @HasMany(() => Like)
     likes: Like[];
 }

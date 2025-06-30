@@ -39,9 +39,7 @@ export class PostsController {
 
     @Get(':id')
     @UseGuards(JwtAuthGuard)
-    async getPost(
-        @Param('id') id: number,
-    ): Promise<PostModel> {
+    async getPostById(@Param('id') id: number): Promise<PostModel> {
         return this.postService.getPostById(id);
     }
 }
