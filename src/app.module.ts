@@ -13,6 +13,8 @@ import { LikesModule } from './likes/likes.module';
 import { FollowersModule } from './followers/followers.module';
 import { Like } from './likes/likes.model';
 import { Follower } from './followers/followers.model';
+import { ProfileModule } from './profile/profile.module';
+import { Profile } from './profile/profile.model';
 
 @Module({
   controllers: [],
@@ -28,8 +30,9 @@ import { Follower } from './followers/followers.model';
       username: process.env.POSTGRES_USER,
       password: String(process.env.POSTGRES_PASSWORD),
       database: process.env.POSTGRES_DB,
-      models: [User, Post, Comment, Like, Follower],
+      models: [User, Post, Comment, Like, Follower, Profile],
       autoLoadModels: true,
+      synchronize: true,
       logging: false
     }),
     HealthModule,
@@ -38,7 +41,8 @@ import { Follower } from './followers/followers.model';
     PostsModule,
     CommentsModule,
     LikesModule,
-    FollowersModule
+    FollowersModule,
+    ProfileModule
   ],
 })
 export class AppModule {}

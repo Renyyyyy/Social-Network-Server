@@ -20,7 +20,6 @@ export class Follower extends Model<Follower, FollowerCreationAttrs>{
     @Column({ type: DataType.INTEGER, allowNull: false })
     userId: number;
 
-    // TODO how to remove password 
     @BelongsTo(() => User)
     user: User;
 }

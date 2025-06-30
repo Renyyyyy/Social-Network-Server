@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Post, Put, Req, UseGuards } from '@nestjs/common';
+import { Body, Controller, Delete, Get, HttpCode, Param, Post, Put, Req, UseGuards } from '@nestjs/common';
 import { CreatePostDto } from './dto/create-post.dto';
 import { PostsService } from './posts.service';
 import { Post as PostModel} from './posts.model';
@@ -6,7 +6,6 @@ import { User } from 'src/users/users.model';
 import { DeletePostDto } from './dto/delete-post.dto';
 import { UpdatePostDto } from './dto/update-post.dto';
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
-import { JwtDecodeGuard } from 'src/auth/jwt-decode.guard';
 
 @Controller('posts')
 export class PostsController {
@@ -14,20 +13,35 @@ export class PostsController {
     constructor(private postService: PostsService){}
 
     @UseGuards(JwtAuthGuard)
-    @Post('/create')
+    @Post()
     create(@Body() dto: CreatePostDto, @Req() req: Request & { user: User }): Promise<PostModel> {
         return this.postService.create(dto, req.user);
     }
     
+    @Put()
     @UseGuards(JwtAuthGuard)
-    @Put('/update')
-    update(@Body() dto: UpdatePostDto, @Req() req: Request & { user: User }): Promise<{ message: string }> {
-        return this.postService.update(dto, req.user);
+    async update(
+        @Body() dto: UpdatePostDto,
+        @Req() req: Request & { user: User }
+    ): Promise<void> {
+        await this.postService.update(dto, req.user);
     }
-    
+
+    @Delete()
     @UseGuards(JwtAuthGuard)
-    @Delete('/delete')
-    delete(@Body() dto: DeletePostDto, @Req() req: Request & { user: User }): Promise<{ message: string }> {
-        return this.postService.delete(dto, req.user);
+    @HttpCode(204)
+    async delete(
+        @Body() dto: DeletePostDto,
+        @Req() req: Request & { user: User }
+    ): Promise<void> {
+        await this.postService.delete(dto, req.user);
+    }
+
+    @Get(':id')
+    @UseGuards(JwtAuthGuard)
+    async getPost(
+        @Param('id') id: number,
+    ): Promise<PostModel> {
+        return this.postService.getPostById(id);
     }
 }

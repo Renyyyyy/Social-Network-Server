@@ -1,4 +1,4 @@
-import { Body, Controller, Post, Delete, Put, Req, UseGuards, Get } from '@nestjs/common';
+import { Body, Controller, Post, Delete, Put, Req, UseGuards, Get, HttpCode } from '@nestjs/common';
 import { CreateCommDto } from './dto/create-com.dto';
 import { UpdateCommDto } from './dto/update-com.dto';
 import { DeleteCommDto } from './dto/delete-com.dto';
@@ -19,16 +19,25 @@ export class CommentsController {
 
     @UseGuards(JwtAuthGuard)
     @Put()
-    update(@Body() dto: UpdateCommDto, @Req() req: Request & { user: User }): Promise<{ message: string }> {
-        return this.commentsService.update(dto, req.user);
+    @HttpCode(204)
+    async update(
+        @Body() dto: UpdateCommDto,
+        @Req() req: Request & { user: User }
+    ): Promise<void> {
+        await this.commentsService.update(dto, req.user);
     }
 
     @UseGuards(JwtAuthGuard)
     @Delete()
-    delete(@Body() dto: DeleteCommDto, @Req() req: Request & { user: User }): Promise<{ message: string }>  {
-        return this.commentsService.delete(dto, req.user);
+    @HttpCode(204)
+    async delete(
+        @Body() dto: DeleteCommDto,
+        @Req() req: Request & { user: User }
+    ): Promise<void> {
+        await this.commentsService.delete(dto, req.user);
     }
-    
+
+    @UseGuards(JwtAuthGuard)
     @Get()
     getAll():Promise<Comment[]>{
         return this.commentsService.getAllComments();

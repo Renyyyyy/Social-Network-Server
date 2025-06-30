@@ -17,28 +17,32 @@ export class CommentsService {
         return comment;
     }
 
-    async update(dto: UpdateCommDto, user: User): Promise<{ message: string }> {
+    async update(dto: UpdateCommDto, user: User): Promise<void> {
         const comment = await this.commRepository.findByPk(dto.id);
-        if(!comment){
-            return { message: 'Comment not exist' };
+        
+        if (!comment) {
+            throw new NotFoundException('Comment not found');
         }
-        if(comment.get("userId") == user.id){
-            await comment.update({ content: dto.content });
-            return { message: 'Comment updated successfully' };
+        
+        if (String(comment.userId) !== String(user.id)) {
+            throw new ForbiddenException('You can only update your own comments');
         }
-        return { message: 'You may only update your own comments' };
+        
+        await comment.update({ content: dto.content });
     }
 
-    async delete(dto: DeleteCommDto, user: User): Promise<{ message: string }> {
+    async delete(dto: DeleteCommDto, user: User): Promise<void> {
         const comment = await this.commRepository.findByPk(dto.id);
-        if(!comment){
-            return { message: 'Comment not exist' };
+        
+        if (!comment) {
+            throw new NotFoundException('Comment not found');
         }
-        if(comment.get("userId") == user.id){
-            await this.commRepository.destroy({ where: { id: dto.id } });
-            return { message: 'Comment deleted successfully' };
+        
+        if (comment.get("userId") !== user.id) {
+            throw new ForbiddenException('You can only delete your own comments');
         }
-        return { message: 'You may only delete your own comments' };
+        
+        await this.commRepository.destroy({ where: { id: dto.id } });
     }
 
 
@@ -46,8 +50,8 @@ export class CommentsService {
         return await this.commRepository.findOne({where: { id },include: { all: true }});
     }
 
-    async getAllComments():Promise<Comment[]>{
-        const comms = await this.commRepository.findAll({include: {all: true}/* offset: 10, limit: 10*/});
+    async getAllComments(offset = 0, limit = 10): Promise<Comment[]>{
+        const comms = await this.commRepository.findAll({include: {all: true}, offset: offset, limit: limit});
         return comms/*.map(comms => {
             delete comms.author.password;
             return comms

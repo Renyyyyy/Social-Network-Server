@@ -1,7 +1,8 @@
 import { ApiProperty } from "@nestjs/swagger";
-import {Column, DataType, HasMany, Model, Table} from "sequelize-typescript";
+import {Column, DataType, HasMany, HasOne, Model, Table} from "sequelize-typescript";
 import { Follower } from "src/followers/followers.model";
 import { Post } from "src/posts/posts.model";
+import { Profile } from "src/profile/profile.model";
 
 interface IUser {
     login: string;

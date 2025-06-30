@@ -1,6 +1,7 @@
 import {BelongsTo, Column, DataType, ForeignKey, HasMany, Model, Table} from "sequelize-typescript";
-import { Like } from "src/likes/likes.model";
 import { User } from "src/users/users.model";
+import { Comment } from "src/comments/comments.model"; // Добавьте импорт
+import { Like } from "src/likes/likes.model"; // Добавьте импорт
 
 interface PostCreationAttrs {
     title: string;
@@ -12,22 +13,26 @@ interface PostCreationAttrs {
 export class Post extends Model<Post, PostCreationAttrs>{
     
     //@ts-ignore
-    @Column({type: DataType.INTEGER, unique: true, autoIncrement: true, primaryKey: true}) id: number;
+    @Column({type: DataType.INTEGER,primaryKey: true,autoIncrement: true,unique: true})id: number;
     
-    @Column({type: DataType.STRING,unique: false, allowNull: false})
+    @Column({type: DataType.STRING, allowNull: false})
     title: string;
 
-    @Column({type: DataType.STRING, unique: false, allowNull: false})
+    @Column({type: DataType.STRING, allowNull: false})
     content: string;
 
     @ForeignKey(() => User)
     @Column({type: DataType.INTEGER})
     userId: number;
     
-    // TODO how to remove password 
     @BelongsTo(() => User)
     author: User;
 
+    // Добавьте связь с комментариями
+    @HasMany(() => Comment)
+    comments: Comment[];
+
+    // Добавьте связь с лайками
     @HasMany(() => Like)
     likes: Like[];
 }

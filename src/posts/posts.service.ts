@@ -1,10 +1,12 @@
-import { Injectable } from '@nestjs/common';
+import { ForbiddenException, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
 import { Post } from './posts.model';
 import { CreatePostDto } from './dto/create-post.dto';
 import { User } from 'src/users/users.model';
 import { DeletePostDto } from './dto/delete-post.dto';
 import { UpdatePostDto } from './dto/update-post.dto';
+import { Like } from 'src/likes/likes.model';
+import { Comment } from 'src/comments/comments.model';
 
 @Injectable()
 export class PostsService {
@@ -16,27 +18,59 @@ export class PostsService {
         return post;
     }
 
-    async update(dto: UpdatePostDto, user: User): Promise<{ message: string }> {
+    async update(dto: UpdatePostDto, user: User): Promise<void> {
         const post = await this.postRepository.findByPk(dto.id);
-        if(!post){
-            return { message: 'Post not exist' };
+        
+        if (!post) {
+            throw new NotFoundException('Post not found');
         }
-        if(post.get("userId") == user.id){
-            await post.update({ title: dto.title, content: dto.content });
-            return { message: 'Post updated successfully' };
+        
+        if (post.userId !== user.id) {
+            throw new ForbiddenException('You may only update your own posts');
         }
-        return { message: 'You may only update your own posts' };
+        
+        await post.update({ 
+            title: dto.title, 
+            content: dto.content 
+        });
     }
     
-    async delete(dto: DeletePostDto, user: User): Promise<{ message: string }> {
+    async delete(dto: DeletePostDto, user: User): Promise<void> {
         const post = await this.postRepository.findByPk(dto.id);
-        if(!post){
-            return { message: 'Post not exist' };
+        
+        if (!post) {
+            throw new NotFoundException('Post not found');
         }
-        if(post.get("userId") == user.id){
-            await this.postRepository.destroy({ where: { id: dto.id } });
-            return { message: 'Post deleted successfully' };
+        
+        if (post.userId !== user.id) {
+            throw new ForbiddenException('You may only delete your own posts');
         }
-        return { message: 'You may only delete your own posts' };
+        
+        await post.destroy();
+    }
+
+    async getPostById(id: number): Promise<Post> {
+        return this.postRepository.findByPk(id, {
+            include: [
+                { 
+                    model: User,
+                    attributes: ['id', 'nickname', 'login'] 
+                },
+                { 
+                    model: Comment,
+                    include: [{
+                        model: User,
+                        attributes: ['id', 'nickname']
+                    }]
+                },
+                { 
+                    model: Like,
+                    include: [{
+                        model: User,
+                        attributes: ['id', 'nickname']
+                    }]
+                }
+            ]
+        });
     }
 }

@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Post, Req, UseGuards } from '@nestjs/common';
+import { Body, Controller, Delete, HttpCode, Post, Req, UseGuards } from '@nestjs/common';
 import { FollowersService } from './followers.service';
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 import { User } from 'src/users/users.model';
@@ -15,9 +15,13 @@ export class FollowersController {
         return this.followerService.create(dto, req.user);
     }
     
-    @UseGuards(JwtAuthGuard)
     @Delete()
-    delete(@Body() dto: FollowerDto, @Req() req: Request & { user: User }): Promise<{ message: string }>  {
-        return this.followerService.delete(dto, req.user);
+    @UseGuards(JwtAuthGuard)
+    @HttpCode(204)
+    async delete(
+        @Body() dto: FollowerDto,
+        @Req() req: Request & { user: User }
+    ): Promise<void> {
+        await this.followerService.delete(dto, req.user);
     }
 }
