@@ -12,7 +12,7 @@ export class ProfileService {
 
     async getProfile(userId: number): Promise<Profile> {
         const profile = await this.profileRepository.findOne({
-            where: { userId },
+            where: { userId: Number(userId) },
             include: [{
                 model: User,
                 attributes: ['id', 'nickname']

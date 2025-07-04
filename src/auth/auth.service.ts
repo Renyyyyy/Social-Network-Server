@@ -32,7 +32,6 @@ export class AuthService {
         });
         
         await this.profileService.createProfile(user.get("id"));
-        console.log(user.get("id"))
         return this.generateToken(user);
     }
 
