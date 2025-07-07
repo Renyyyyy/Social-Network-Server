@@ -2,7 +2,6 @@ import { Body, Controller, Get, Post, Put, Req, UseGuards } from '@nestjs/common
 import { CreateUserDto, CreateUserResponse } from 'src/users/dto/create-user.dto';
 import { AuthService } from './auth.service';
 import { User } from 'src/users/users.model';
-import { JwtAuthGuard } from './jwt-auth.guard';
 import { ApiTags } from '@nestjs/swagger';
 import { JwtDecodeGuard } from './jwt-decode.guard';
 
@@ -22,7 +21,7 @@ export class AuthController {
         return this.authService.registration(userDto)
     }
     
-    @UseGuards(JwtAuthGuard)
+    @UseGuards(JwtDecodeGuard)
     @Get('/me')
     me(@Req() req: Request & { user: User }): Promise<User> {
         return this.authService.me(req.user.id);
