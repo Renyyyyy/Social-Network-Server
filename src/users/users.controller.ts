@@ -1,4 +1,4 @@
-import { Body, Controller, Post, Get, UseGuards } from '@nestjs/common';
+import { Body, Controller, Post, Get, UseGuards, Param } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UsersService } from './users.service';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
@@ -17,5 +17,15 @@ export class UsersController {
     @Get()
     getAll():Promise<User[]>{
         return this.usersService.getAllUsers();
+    }
+
+    @ApiOperation({ summary: 'Get user by ID' })
+    @ApiResponse({ status: 200, type: User })
+    @ApiResponse({ status: 404, description: 'User not found' })
+    @ApiResponse({ status: 401, description: 'Unauthorized' })
+    @UseGuards(JwtAuthGuard)
+    @Get(':id')
+    getById(@Param('id') id: number):Promise<User>{
+        return this.usersService.getUserById(id);
     }
 }
