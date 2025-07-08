@@ -2,6 +2,7 @@ import {BelongsTo, Column, DataType, ForeignKey, HasMany, Model, Table} from "se
 import { User } from "src/users/users.model";
 
 interface ProfileCreationAttrs {
+    nickname: string;
     about: string;
     userId: number;
 }

@@ -27,7 +27,7 @@ export class User extends Model<User, IUser>{
     @Column({type: DataType.INTEGER, unique: true, autoIncrement: true, primaryKey: true}) id: number;
     
     @ApiProperty({example: 'Mike', description: 'Name'})
-    @Column({type: DataType.STRING,unique: false, allowNull: false})
+    @Column({type: DataType.STRING,unique: true, allowNull: false})
     nickname: string;
 
     @ApiProperty({example: 'Mike1900', description: 'Login'})
