@@ -53,6 +53,7 @@ export class PostsService {
   }
 
   async getPostById(id: number): Promise<Post> {
+    console.log(id);
     return this.postRepository.findByPk(id, {
       include: [
         {
