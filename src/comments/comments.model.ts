@@ -1,34 +1,44 @@
-import { BelongsTo, Column, DataType, ForeignKey, Model, Table } from "sequelize-typescript";
+import {
+  BelongsTo,
+  Column,
+  DataType,
+  ForeignKey,
+  Model,
+  Table,
+} from "sequelize-typescript";
 import { Post } from "src/posts/posts.model";
 import { User } from "src/users/users.model";
 
 interface CommCreationAttrs {
-    content: string;
-    userId: number;
-    postId: number;
+  content: string;
+  userId: number;
+  postId: number;
 }
 
-@Table({ tableName: 'Comments' })
-export class Comment extends Model<Comment, CommCreationAttrs>{
+@Table({ tableName: "Comments" })
+export class Comment extends Model<Comment, CommCreationAttrs> {
+  @Column({
+    type: DataType.INTEGER,
+    unique: true,
+    autoIncrement: true,
+    primaryKey: true,
+  }) //@ts-ignore
+  id: number;
 
-    //@ts-ignore
-    @Column({ type: DataType.INTEGER, unique: true, autoIncrement: true, primaryKey: true }) id: number;
+  @Column({ type: DataType.STRING, allowNull: false })
+  content: string;
 
-    @Column({ type: DataType.STRING, allowNull: false }) 
-    content: string;
-    
-    @ForeignKey(() => User)
-    @Column({ type: DataType.INTEGER, allowNull: false })
-    userId: number;
+  @ForeignKey(() => User)
+  @Column({ type: DataType.INTEGER })
+  userId: number;
 
-    // TODO how to remove password 
-    @BelongsTo(() => User)
-    author: User;
+  @BelongsTo(() => User)
+  user: User;
 
-    @ForeignKey(() => Post)
-    @Column({ type: DataType.INTEGER, allowNull: false })
-    postId: number;
+  @ForeignKey(() => Post)
+  @Column({ type: DataType.INTEGER, allowNull: false })
+  postId: number;
 
-    @BelongsTo(() => Post)
-    post: Post;
+  @BelongsTo(() => Post)
+  post: Post;
 }

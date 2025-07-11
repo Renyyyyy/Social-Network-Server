@@ -55,4 +55,12 @@ export class PostsController {
   async getPostById(@Param("id") id: number): Promise<PostModel> {
     return this.postService.getPostById(id);
   }
+
+  @Get("user/:userId")
+  @UseGuards(JwtAuthGuard)
+  async getPostsByUserId(
+    @Param("userId") userId: number
+  ): Promise<PostModel[]> {
+    return this.postService.getPostsByUserId(userId);
+  }
 }

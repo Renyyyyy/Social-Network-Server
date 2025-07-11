@@ -1,45 +1,59 @@
-import { Body, Controller, Post, Delete, Put, Req, UseGuards, Get, HttpCode } from '@nestjs/common';
-import { CreateCommDto } from './dto/create-com.dto';
-import { UpdateCommDto } from './dto/update-com.dto';
-import { DeleteCommDto } from './dto/delete-com.dto';
-import { CommentsService } from './comments.service';
-import { Comment } from './comments.model';
-import { User } from 'src/users/users.model';
-import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
+import {
+  Body,
+  Controller,
+  Post,
+  Delete,
+  Put,
+  Req,
+  UseGuards,
+  Get,
+  HttpCode,
+  Param,
+} from "@nestjs/common";
+import { CreateCommDto } from "./dto/create-com.dto";
+import { UpdateCommDto } from "./dto/update-com.dto";
+import { DeleteCommDto } from "./dto/delete-com.dto";
+import { CommentsService } from "./comments.service";
+import { Comment } from "./comments.model";
+import { User } from "src/users/users.model";
+import { JwtAuthGuard } from "src/auth/jwt-auth.guard";
 
-@Controller('comments')
+@Controller("comments")
 export class CommentsController {
-    constructor(private commentsService: CommentsService) {}
-    
-    @UseGuards(JwtAuthGuard)
-    @Post()
-    create(@Body() dto: CreateCommDto, @Req() req: Request & { user: User }): Promise<Comment> {
-        return this.commentsService.create(dto, req.user);
-    }
+  constructor(private commentsService: CommentsService) {}
 
-    @UseGuards(JwtAuthGuard)
-    @Put()
-    @HttpCode(204)
-    async update(
-        @Body() dto: UpdateCommDto,
-        @Req() req: Request & { user: User }
-    ): Promise<void> {
-        await this.commentsService.update(dto, req.user);
-    }
+  @UseGuards(JwtAuthGuard)
+  @Post()
+  create(
+    @Body() dto: CreateCommDto,
+    @Req() req: Request & { user: User }
+  ): Promise<Comment> {
+    return this.commentsService.create(dto, req.user);
+  }
 
-    @UseGuards(JwtAuthGuard)
-    @Delete()
-    @HttpCode(204)
-    async delete(
-        @Body() dto: DeleteCommDto,
-        @Req() req: Request & { user: User }
-    ): Promise<void> {
-        await this.commentsService.delete(dto, req.user);
-    }
+  @UseGuards(JwtAuthGuard)
+  @Put()
+  @HttpCode(204)
+  async update(
+    @Body() dto: UpdateCommDto,
+    @Req() req: Request & { user: User }
+  ): Promise<void> {
+    await this.commentsService.update(dto, req.user);
+  }
 
-    @UseGuards(JwtAuthGuard)
-    @Get()
-    getAll():Promise<Comment[]>{
-        return this.commentsService.getAllComments();
-    }
+  @UseGuards(JwtAuthGuard)
+  @Delete(":id")
+  @HttpCode(204)
+  async delete(
+    @Param("id") id: number,
+    @Req() req: Request & { user: User }
+  ): Promise<void> {
+    await this.commentsService.delete(id, req.user);
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Get()
+  getAll(): Promise<Comment[]> {
+    return this.commentsService.getAllComments();
+  }
 }

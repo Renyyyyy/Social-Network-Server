@@ -28,7 +28,7 @@ export class PostsService {
       throw new NotFoundException("Post not found");
     }
 
-    if (post.userId !== user.id) {
+    if (post.get("userId") !== user.id) {
       throw new ForbiddenException("You may only update your own posts");
     }
 
@@ -55,6 +55,36 @@ export class PostsService {
   async getPostById(id: number): Promise<Post> {
     console.log(id);
     return this.postRepository.findByPk(id, {
+      include: [
+        {
+          model: User,
+          attributes: ["id", "nickname", "login"],
+        },
+        {
+          model: Comment,
+          include: [
+            {
+              model: User,
+              attributes: ["id", "nickname"],
+            },
+          ],
+        },
+        {
+          model: Like,
+          include: [
+            {
+              model: User,
+              attributes: ["id", "nickname"],
+            },
+          ],
+        },
+      ],
+    });
+  }
+
+  async getPostsByUserId(userId: number): Promise<Post[]> {
+    return this.postRepository.findAll({
+      where: { userId },
       include: [
         {
           model: User,
