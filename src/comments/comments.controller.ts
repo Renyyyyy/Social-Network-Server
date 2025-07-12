@@ -22,23 +22,22 @@ import { JwtAuthGuard } from "src/auth/jwt-auth.guard";
 export class CommentsController {
   constructor(private commentsService: CommentsService) {}
 
-  @UseGuards(JwtAuthGuard)
   @Post()
-  create(
+  @UseGuards(JwtAuthGuard)
+  async create(
     @Body() dto: CreateCommDto,
     @Req() req: Request & { user: User }
   ): Promise<Comment> {
     return this.commentsService.create(dto, req.user);
   }
 
-  @UseGuards(JwtAuthGuard)
   @Put()
-  @HttpCode(204)
+  @UseGuards(JwtAuthGuard)
   async update(
     @Body() dto: UpdateCommDto,
     @Req() req: Request & { user: User }
-  ): Promise<void> {
-    await this.commentsService.update(dto, req.user);
+  ): Promise<Comment> {
+    return this.commentsService.update(dto, req.user);
   }
 
   @UseGuards(JwtAuthGuard)

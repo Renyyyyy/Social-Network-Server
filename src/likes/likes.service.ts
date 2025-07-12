@@ -13,7 +13,10 @@ export class LikesService {
   constructor(@InjectModel(Like) private likeRepository: typeof Like) {}
 
   async create(dto: LikeDto, user: User): Promise<Like> {
-    return this.likeRepository.create({ ...dto, userId: user.id });
+    return this.likeRepository.create({
+      postId: dto.postId,
+      userId: user.id,
+    });
   }
 
   async deleteLike(likeId: number, user: User): Promise<void> {
@@ -23,7 +26,7 @@ export class LikesService {
       throw new NotFoundException("Like not found");
     }
 
-    if (like.userId !== user.id) {
+    if (like.get("userId") !== user.id) {
       throw new ForbiddenException("You may only delete your own likes");
     }
 

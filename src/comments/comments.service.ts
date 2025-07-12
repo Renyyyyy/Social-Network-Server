@@ -17,21 +17,42 @@ export class CommentsService {
   ) {}
 
   async create(dto: CreateCommDto, user: User): Promise<Comment> {
-    return this.commentRepository.create({ ...dto, userId: user.id });
+    const comment = await this.commentRepository.create({
+      ...dto,
+      userId: user.id,
+    });
+
+    return this.commentRepository.findByPk(comment.get("id"), {
+      include: [
+        {
+          model: User,
+          attributes: ["id", "nickname"],
+        },
+      ],
+    });
   }
 
-  async update(dto: UpdateCommDto, user: User): Promise<void> {
+  async update(dto: UpdateCommDto, user: User): Promise<Comment> {
     const comment = await this.commentRepository.findByPk(dto.id);
 
     if (!comment) {
       throw new NotFoundException("Comment not found");
     }
 
-    if (comment.userId !== user.id) {
+    if (comment.get("userId") !== user.id) {
       throw new ForbiddenException("You may only update your own comments");
     }
 
     await comment.update({ content: dto.content });
+
+    return this.commentRepository.findByPk(comment.id, {
+      include: [
+        {
+          model: User,
+          attributes: ["id", "nickname"],
+        },
+      ],
+    });
   }
 
   async delete(commentId: number, user: User): Promise<void> {
@@ -41,7 +62,7 @@ export class CommentsService {
       throw new NotFoundException("Comment not found");
     }
 
-    if (comment.userId !== user.id) {
+    if (comment.get("userId") !== user.id) {
       throw new ForbiddenException("You may only delete your own comments");
     }
 
