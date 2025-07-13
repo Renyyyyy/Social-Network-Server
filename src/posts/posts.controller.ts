@@ -7,6 +7,7 @@ import {
   Param,
   Post,
   Put,
+  Query,
   Req,
   UseGuards,
 } from "@nestjs/common";
@@ -62,5 +63,15 @@ export class PostsController {
     @Param("userId") userId: number
   ): Promise<PostModel[]> {
     return this.postService.getPostsByUserId(userId);
+  }
+
+  @Get("user/:userId/paginated")
+  @UseGuards(JwtAuthGuard)
+  async getPaginatedUserPosts(
+    @Param("userId") userId: number,
+    @Query("page") page: number = 1,
+    @Query("limit") limit: number = 10
+  ): Promise<{ posts: PostModel[]; totalCount: number }> {
+    return this.postService.getPaginatedUserPosts(userId, page, limit);
   }
 }

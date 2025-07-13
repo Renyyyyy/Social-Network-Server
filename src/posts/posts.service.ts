@@ -111,4 +111,29 @@ export class PostsService {
       ],
     });
   }
+
+  async getPaginatedUserPosts(
+    userId: number,
+    page: number,
+    limit: number
+  ): Promise<{ posts: Post[]; totalCount: number }> {
+    const offset = (page - 1) * limit;
+
+    const { count, rows } = await this.postRepository.findAndCountAll({
+      where: { userId },
+      limit,
+      offset,
+      order: [["id", "DESC"]],
+      include: [
+        { model: User, attributes: ["id", "nickname", "login"] },
+        { model: Comment, include: [User] },
+        { model: Like, include: [User] },
+      ],
+    });
+
+    return {
+      posts: rows,
+      totalCount: count,
+    };
+  }
 }
