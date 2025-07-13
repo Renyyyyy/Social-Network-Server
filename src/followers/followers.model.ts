@@ -1,25 +1,47 @@
-import { BelongsTo, Column, DataType, ForeignKey, Model, Table } from "sequelize-typescript";
+import {
+  BelongsTo,
+  Column,
+  DataType,
+  ForeignKey,
+  Model,
+  Table,
+} from "sequelize-typescript";
 import { User } from "src/users/users.model";
 
 interface FollowerCreationAttrs {
-    content: string;
-    userId: number;
-    followerId: number;
+  userId: number;
+  followerId: number;
 }
 
-@Table({ tableName: 'Followers' })
-export class Follower extends Model<Follower, FollowerCreationAttrs>{
+@Table({
+  tableName: "Followers",
+  indexes: [
+    {
+      unique: true,
+      fields: ["userId", "followerId"],
+    },
+  ],
+})
+export class Follower extends Model<Follower, FollowerCreationAttrs> {
+  @Column({
+    type: DataType.INTEGER,
+    unique: true,
+    autoIncrement: true,
+    primaryKey: true,
+  }) //@ts-ignore
+  id: number;
 
-    //@ts-ignore
-    @Column({ type: DataType.INTEGER, unique: true, autoIncrement: true, primaryKey: true }) id: number;
-    
-    @Column({ type: DataType.INTEGER, allowNull: false })
-    followerId: number;
+  @ForeignKey(() => User)
+  @Column({ type: DataType.INTEGER, allowNull: false })
+  followerId: number;
 
-    @ForeignKey(() => User)
-    @Column({ type: DataType.INTEGER, allowNull: false })
-    userId: number;
+  @ForeignKey(() => User)
+  @Column({ type: DataType.INTEGER, allowNull: false })
+  userId: number;
 
-    @BelongsTo(() => User)
-    user: User;
+  @BelongsTo(() => User, { foreignKey: "userId", as: "user" })
+  user: User;
+
+  @BelongsTo(() => User, { foreignKey: "followerId", as: "follower" })
+  follower: User;
 }

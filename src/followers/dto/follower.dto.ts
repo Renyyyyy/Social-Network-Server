@@ -1,4 +1,3 @@
 export class FollowerDto {
-    readonly id: number;
-    readonly followerId: number;
+  readonly followerId: number;
 }
