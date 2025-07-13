@@ -7,6 +7,14 @@ import {User} from "./users/users.model";
 import { AuthModule } from './auth/auth.module';
 import { PostsModule } from './posts/posts.module';
 import { Post } from './posts/posts.model';
+import { CommentsModule } from './comments/comments.module';
+import { Comment } from './comments/comments.model';
+import { LikesModule } from './likes/likes.module';
+import { FollowersModule } from './followers/followers.module';
+import { Like } from './likes/likes.model';
+import { Follower } from './followers/followers.model';
+import { ProfileModule } from './profile/profile.module';
+import { Profile } from './profile/profile.model';
 
 @Module({
   controllers: [],
@@ -22,14 +30,19 @@ import { Post } from './posts/posts.model';
       username: process.env.POSTGRES_USER,
       password: String(process.env.POSTGRES_PASSWORD),
       database: process.env.POSTGRES_DB,
-      models: [User, Post],
+      models: [User, Post, Comment, Like, Follower, Profile],
       autoLoadModels: true,
+      synchronize: true,
       logging: false
     }),
     HealthModule,
     UsersModule,
     AuthModule,
-    PostsModule
+    PostsModule,
+    CommentsModule,
+    LikesModule,
+    FollowersModule,
+    ProfileModule
   ],
 })
 export class AppModule {}

@@ -17,7 +17,12 @@ async function start() {
     SwaggerModule.setup('/api/docs', app, document)
 
     app.setGlobalPrefix('api')
-    app.enableCors();
+    app.enableCors({
+        origin: 'http://localhost:3000',
+        credentials: true,
+        methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+        allowedHeaders: 'Content-Type, Accept, Authorization',
+    });
 
     await app.listen(PORT, () => console.log(`pong on ${PORT}`))
 }
